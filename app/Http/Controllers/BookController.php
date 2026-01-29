@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use App\Models\Categorie;
 
 class BookController extends Controller
 {
@@ -12,7 +13,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Book::with('categorie')->get();
+        return view('books.index', compact('books'));
     }
 
     /**
@@ -20,7 +22,9 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        return view('books.create', [
+            'categories' => Categorie::all()
+        ]);
     }
 
     /**
@@ -28,7 +32,16 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'categorie_id' => 'required|exists:categories,id',
+            'quantity' => 'required|integer|min:0',
+        ]);
+
+        Book::create($validated);
+
+        return redirect()->route('books')->with('success', 'Book created successfully.');
     }
 
     /**
@@ -44,7 +57,10 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        return view('books.edit', [
+            'book' => $book,
+            'categories' => Categorie::all()
+        ]);
     }
 
     /**
@@ -52,7 +68,16 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'categorie_id' => 'required|exists:categories,id',
+            'quantity' => 'required|integer|min:0',
+        ]);
+
+        $book->update($validated);
+
+        return redirect()->route('books')->with('success', 'Book updated successfully.');
     }
 
     /**
@@ -60,6 +85,7 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+        return redirect()->route('books')->with('success', 'Book deleted successfully.');
     }
 }
