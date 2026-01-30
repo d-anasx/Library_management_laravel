@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
     Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');
     Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
+    Route::get('/my-books', [BookController::class, 'userBooks'])->name('userbooks');
 });
 
 require __DIR__.'/auth.php';

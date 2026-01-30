@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use App\Models\Categorie;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -15,6 +16,12 @@ class BookController extends Controller
     {
         $books = Book::with('categorie')->get();
         return view('books.index', compact('books'));
+    }
+    public function userBooks()
+    {
+        $user = auth()->user;
+        $books = $user->books()->with('categorie')->get();
+        return view('books.user_books', compact('books'));
     }
 
     /**
